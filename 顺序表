@@ -1,0 +1,26 @@
+#include<stdio.h>
+#include<string.h>
+//顺序表实现
+#define MAX_SIZE 100
+typedef struct{
+    int ID;//学号
+    char name[50];//姓名
+    int score;//成绩
+}student;
+
+typedef struct{
+    int length;//长度
+    student students[MAX_SIZE];
+}seqlist;
+
+void initList(seqlist* L){
+    L->length=0;
+}
+
+int main(){
+    seqlist list;
+    initList(&list);
+    printf("初始化成功，目前占用长度%d\n",list.length);
+    printf("目前占用内存%zu字节\n",sizeof(list.students));
+    return 0;
+}
