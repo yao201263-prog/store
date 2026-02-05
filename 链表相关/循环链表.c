@@ -73,3 +73,38 @@ int iscList(Node* head){
     return 0; // 无环
 }
 
+int main(){
+    circularList *list = (circularList*)malloc(sizeof(circularList));
+    
+    printf("========== 测试1：创建循环链表 ==========\n");
+    ccList(list, 5);
+    printf("循环链表创建完成，大小为%d\n", list->size);
+    
+    printf("\n========== 测试2：移动指针 ==========\n");
+    Node* ptr = list->head;
+    printf("初始节点数据：%d\n", ptr->data);
+    ptr = movePointer(ptr, 3);
+    printf("移动3次后节点数据：%d\n", ptr->data);
+    
+    printf("\n========== 测试3：检测环 ==========\n");
+    int ringLength = iscList(list->head);
+    if (ringLength > 0) {
+        printf("检测到环，环的长度为 %d\n", ringLength);
+    } else {
+        printf("未检测到环\n");
+    }
+    
+    // 清理内存
+    // 注意：循环链表的释放需要特别处理以避免无限循环
+    Node* current = list->head;
+    Node* next;
+    for (int i = 0; i < list->size; i++) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    free(list);
+    
+    printf("测试完成！\n");
+    return 0;
+}
