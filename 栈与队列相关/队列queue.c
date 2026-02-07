@@ -97,6 +97,28 @@ int getSize(Queue* q){
 	return size;	
 }
 
+//获取队首
+void getFront(Queue* q,int* e){
+	if(isEmpty(q)){
+		printf("队列为空！\n");
+		e=NULL;
+		return;
+	}
+
+	*e=q->front->data;
+}
+
+//获取队尾
+void getRear(Queue* q,int *e){
+	if(isEmpty(q)){
+		printf("队列为空！\n");
+		e=NULL;
+		return;
+	}
+
+	*e=q->rear->data;
+}
+
 //释放队列
 void freeQueue(Queue* q){
 	Node* ptr=q->front;
@@ -136,3 +158,4 @@ int main()
     
     return 0;
 }
+
