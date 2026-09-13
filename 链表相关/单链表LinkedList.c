@@ -89,40 +89,48 @@ void insertNode(List *list,int k,int newData){
 	}		
 }
 
-//删除第k个节点（包括尾节点）
-void deleteNode(List *list,int k){
-	if(list->size==0){
-		printf("链表为空！无法操作");
-		return;
-	}
-	
-	if(k>list->size||k<0){
-		printf("越界错误！链表长度为%d\n",list->size);	
-		return;
-	}
-	
-	if(k==0){
-		Node* ptr=list->head;
-		list->head=list->head->next;
-		free(ptr);
-	}else if(k<list->size){
-		Node* ptr=list->head;
-		for(int i=0;i<k-1;i++){
-			ptr=ptr->next;
-		}//执行后ptr指向第k-1个节点
-		Node* temp=ptr->next;
-		ptr->next=ptr->next->next;//第k-1个节点尾指针指向第k+1个节点
-		free(temp);
-	}else{
-		Node* ptr=list->head;
-		for(int i=0;i<k-1;i++){
-			ptr=ptr->next;
-		}//执行后指针指向链表尾节点的前一个节点
-		Node* temp = ptr->next;
-		ptr->next = NULL;
-		free(temp);
-	}
-	list->size--;
+//删除第k个节点（包括头尾节点），k从1开始计数
+void deleteNode(List *list, int k){
+    if(list->size == 0){
+        printf("链表为空！无法操作\n");
+        return;
+    }
+    
+    // k的有效范围是1到size（包含）
+    if(k < 1 || k > list->size){
+        printf("越界错误！链表长度为%d，k=%d不合法\n", list->size, k);
+        return;
+    }
+    
+    // 删除头节点（k=1）
+    if(k == 1){
+        Node* ptr = list->head;
+        list->head = list->head->next;
+        free(ptr);
+    }
+    // 删除尾节点（k=size）
+    else if(k == list->size){
+        Node* ptr = list->head;
+        // 找到倒数第二个节点
+        for(int i = 0; i < list->size - 2; i++){
+            ptr = ptr->next;
+        }
+        Node* temp = ptr->next;  // 这是尾节点
+        ptr->next = NULL;  // 倒数第二个节点的next设为NULL
+        free(temp);
+    }
+    // 删除中间节点
+    else{
+        Node* ptr = list->head;
+        // 找到第k-1个节点（要删除节点的前一个节点）
+        for(int i = 0; i < k - 2; i++){
+            ptr = ptr->next;
+        }
+        Node* temp = ptr->next;  // 这是要删除的第k个节点
+        ptr->next = ptr->next->next;  // 跳过第k个节点，连接第k+1个节点
+        free(temp);
+    }
+    list->size--;
 }
 
 //设置第k个节点的数据
@@ -164,6 +172,25 @@ Node* findData(List *list,int Data){
     printf("未找到数据为 %d 的节点\n", Data);
     return NULL; // 未找到
 }
+
+//反转链表
+void reverseList(List* list) {
+    Node* prev = NULL;
+    Node* current = list->head;
+    Node* next = NULL;
+    
+    while (current != NULL) {
+        next = current->next; // 保存下一个节点
+        current->next = prev; // 反转当前节点的指针
+        prev = current;       // 移动prev和current指针
+        current = next;
+    }
+    
+    list->head = prev; // 更新头节点
+}
+
+
+
 
 
 int main() {
@@ -217,3 +244,42 @@ int main() {
     printf("测试完成！\n");
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+/*
+应用题：
+1：导出倒数第k个节点的数据
+方法：双指针法：类似于滑动区间，始终保持两个指针间距为k
+使得快指针先走k步，然后快慢指针同时走，直到快指针到达链表尾部
+此时慢指针所指节点即为倒数第k个节点
+
+2两个单链表有共同后缀，找出首个公共结点
+快慢指针法：
+先遍历两个链表，计算出长度差d
+然后让较长链表的指针先走d步
+接着两个指针同时走，直到相遇
+时间复杂度O(n)，空间复杂度O(1)
+
+3单链表储存n个整数，要求对于绝对值相等的数字，
+只保留其中第一个，删除其他节点，数字绝对值小于等于n；
+方法：空间换时间，使用辅助数组记录绝对值是否出现过
+
+4反转单链表
+建立三个指针pre、cur、next
+初始时pre指向NULL，cur指向头节点，next指向cur的下一个节点
+然后遍历链表，在每一步中，将cur的next指针指向pre，然后将pre、cur、next指针依次向前移动一位
+遍历结束后，pre指针将指向新的头节点 
+
+5删除中间节点
+快慢指针：快指针每次走两步，慢指针每次走一步
+当快指针到达链表尾部时，慢指针正好指向中间节点
+删除慢指针所指节点即可
+*/
